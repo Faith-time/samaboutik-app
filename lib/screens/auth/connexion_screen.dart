@@ -64,24 +64,20 @@ class _ConnexionScreenState extends State<ConnexionScreen> {
         .connexion(_telephone.text.trim(), _motDePasse.text);
   }
 
-  void _message(String texte) => ScaffoldMessenger.of(context)
-    ..hideCurrentSnackBar()
-    ..showSnackBar(SnackBar(content: Text(texte)));
-
   void _motDePasseOublie() => showDialog<void>(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: const Text('Mot de passe oublié'),
-          content: const Text(
-              'La réinitialisation du mot de passe sera bientôt disponible.'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(ctx).pop(),
-              child: const Text('Compris'),
-            ),
-          ],
+    context: context,
+    builder: (ctx) => AlertDialog(
+      title: const Text('Mot de passe oublié'),
+      content: const Text(
+          'La réinitialisation du mot de passe sera bientôt disponible.'),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(ctx).pop(),
+          child: const Text('Compris'),
         ),
-      );
+      ],
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -119,14 +115,9 @@ class _ConnexionScreenState extends State<ConnexionScreen> {
                           fontWeight: FontWeight.w700,
                           color: Couleurs.texte)),
                   const SizedBox(height: 2),
-                  const Text('Accédez à votre espace',
+                  const Text('Accédez à votre espace commerçant',
                       textAlign: TextAlign.center, style: Typo.petit),
-                  const SizedBox(height: 18),
-                  _OngletsRole(
-                    onClient: () => _message(
-                        "Les clients n'ont pas besoin de compte : ils paient avec leur téléphone."),
-                  ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 22),
                   ChampTexte(
                     controller: _telephone,
                     label: 'Numéro de téléphone',
@@ -171,7 +162,7 @@ class _ConnexionScreenState extends State<ConnexionScreen> {
                               ),
                               child: _souvenir
                                   ? const Icon(Icons.check_rounded,
-                                      size: 16, color: Colors.white)
+                                  size: 16, color: Colors.white)
                                   : null,
                             ),
                             const SizedBox(width: 8),
@@ -202,40 +193,7 @@ class _ConnexionScreenState extends State<ConnexionScreen> {
                     chargement: auth.chargement,
                     onPressed: _valider,
                   ),
-                  const SizedBox(height: 20),
-                  Row(
-                    children: [
-                      const Expanded(child: Divider()),
-                      const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 12),
-                        child: Text('Ou continuer avec', style: Typo.petit),
-                      ),
-                      const Expanded(child: Divider()),
-                    ],
-                  ),
-                  const SizedBox(height: 14),
-                  Center(
-                    child: GestureDetector(
-                      onTap: () => _message(
-                          'La connexion avec Google sera bientôt disponible.'),
-                      child: Container(
-                        width: 52,
-                        height: 52,
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                          boxShadow: ombresDouces,
-                        ),
-                        alignment: Alignment.center,
-                        child: const Text('G',
-                            style: TextStyle(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w700,
-                                color: Color(0xFF4285F4))),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 18),
+                  const SizedBox(height: 22),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -255,63 +213,6 @@ class _ConnexionScreenState extends State<ConnexionScreen> {
             ),
           ),
         ),
-      ),
-    );
-  }
-}
-
-/// Sélecteur « Commerçant | Client » de la maquette.
-/// Seul le commerçant se connecte : le client paie sans compte.
-class _OngletsRole extends StatelessWidget {
-  final VoidCallback onClient;
-  const _OngletsRole({required this.onClient});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 46,
-      padding: const EdgeInsets.all(4),
-      decoration: BoxDecoration(
-        color: const Color(0xFFE6EDFD),
-        borderRadius: BorderRadius.circular(24),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Container(
-              decoration: BoxDecoration(
-                color: Couleurs.bleu,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              alignment: Alignment.center,
-              child: const Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.storefront_rounded, size: 16, color: Colors.white),
-                  SizedBox(width: 6),
-                  Text('Commerçant',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600)),
-                ],
-              ),
-            ),
-          ),
-          Expanded(
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: onClient,
-              child: const Center(
-                child: Text('Client',
-                    style: TextStyle(
-                        color: Couleurs.texteDoux,
-                        fontSize: 13,
-                        fontWeight: FontWeight.w500)),
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }
