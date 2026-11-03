@@ -19,6 +19,9 @@ import '../produits/liste_produits_screen.dart';
 import '../profil/profil_screen.dart';
 import '../ventes/historique_screen.dart';
 import '../ventes/nouvelle_vente_screen.dart';
+import '../stock/classement_screen.dart';
+import '../stock/stock_screen.dart';
+import '../../widgets/stock_widgets.dart';
 
 /// Écran principal : 4 onglets (Accueil, Ventes, Analyse, Profil).
 class AccueilScreen extends StatefulWidget {
@@ -104,25 +107,7 @@ class _AccueilOngletState extends State<_AccueilOnglet> {
                     size: 28, color: Couleurs.texte),
                 onPressed: widget.onProfil,
               ),
-              IconButton(
-                padding: EdgeInsets.zero,
-                alignment: Alignment.centerRight,
-                icon: const Icon(Icons.notifications_none_rounded,
-                    size: 28, color: Couleurs.texte),
-                onPressed: () => showDialog<void>(
-                  context: context,
-                  builder: (ctx) => AlertDialog(
-                    title: const Text('Notifications'),
-                    content: const Text('Aucune notification pour le moment.'),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.of(ctx).pop(),
-                        child: const Text('Fermer'),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+              const CloucheStock(),
             ],
           ),
           const SizedBox(height: 6),
@@ -220,6 +205,8 @@ class _AccueilOngletState extends State<_AccueilOnglet> {
               ],
             ),
           ],
+          const SizedBox(height: 16),
+          const CarteAlertesStock(),
           const SizedBox(height: 22),
           Center(
             child: SizedBox(
@@ -257,6 +244,28 @@ class _AccueilOngletState extends State<_AccueilOnglet> {
                   onTap: widget.onAnalyse,
                 ),
               ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: _Action(
+                  icone: Icons.inventory_rounded,
+                  libelle: 'Mon stock',
+                  onTap: () => aller(context, const StockScreen()),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _Action(
+                  icone: Icons.leaderboard_rounded,
+                  libelle: 'Classement',
+                  onTap: () => aller(context, const ClassementScreen()),
+                ),
+              ),
+              const SizedBox(width: 12),
+              const Expanded(child: SizedBox()),
             ],
           ),
         ],

@@ -5,6 +5,7 @@ import '../../core/routes.dart';
 import '../../core/theme.dart';
 import '../../providers/panier_provider.dart';
 import '../../providers/produit_provider.dart';
+import '../../providers/stock_provider.dart';
 import '../../providers/vente_provider.dart';
 import '../../widgets/bouton_principal.dart';
 import '../../widgets/carte_produit.dart';
@@ -16,6 +17,7 @@ import '../paiement/choix_paiement_screen.dart';
 import '../produits/formulaire_produit_screen.dart';
 
 /// Le commerçant choisit les produits et les quantités, puis passe au paiement.
+/// Le stock restant est affiché, et on ne peut pas vendre plus que ce qu'il reste.
 class NouvelleVenteScreen extends StatefulWidget {
   const NouvelleVenteScreen({super.key});
 
@@ -31,6 +33,7 @@ class _NouvelleVenteScreenState extends State<NouvelleVenteScreen> {
       if (!mounted) return;
       context.read<PanierProvider>().vider();
       context.read<ProduitProvider>().charger();
+      context.read<StockProvider>().charger();
     });
   }
 
@@ -42,10 +45,14 @@ class _NouvelleVenteScreenState extends State<NouvelleVenteScreen> {
     if (vente == null) {
       ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(ventes.erreur ?? 'Une erreur est survenue.')));
+      // Le stock a peut-être changé : on le recharge
+      context.read<StockProvider>().charger();
       return;
     }
     panier.vider();
     await aller(context, ChoixPaiementScreen(vente: vente));
+    // Au retour, le stock a peut-être baissé (paiement confirmé)
+    if (mounted) context.read<StockProvider>().charger();
   }
 
   @override
@@ -53,6 +60,7 @@ class _NouvelleVenteScreenState extends State<NouvelleVenteScreen> {
     final produits = context.watch<ProduitProvider>();
     final panier = context.watch<PanierProvider>();
     final ventes = context.watch<VenteProvider>();
+    final stock = context.watch<StockProvider>();
     final actifs = produits.actifs;
 
     Widget contenu;
@@ -77,11 +85,50 @@ class _NouvelleVenteScreenState extends State<NouvelleVenteScreen> {
         separatorBuilder: (_, __) => const SizedBox(height: 14),
         itemBuilder: (_, i) {
           final p = actifs[i];
-          return CarteProduit(
-            produit: p,
-            quantite: panier.quantite(p.id),
-            onAjouter: () => context.read<PanierProvider>().ajouter(p),
-            onRetirer: () => context.read<PanierProvider>().retirer(p),
+          final s = stock.produit(p.id);
+          final restant = (s != null && s.suivreStock) ? s.stockActuel : null;
+          final dansPanier = panier.quantite(p.id);
+
+          String? info;
+          Color infoCouleur = Couleurs.texteDoux;
+          if (restant != null) {
+            if (restant <= 0) {
+              info = 'Épuisé';
+              infoCouleur = Couleurs.erreur;
+            } else {
+              final reste = restant - dansPanier;
+              info = 'Stock restant : $reste';
+              if (s!.bas) infoCouleur = Couleurs.bitcoin;
+            }
+          }
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CarteProduit(
+                produit: p,
+                quantite: dansPanier,
+                onAjouter: () {
+                  if (restant != null && dansPanier >= restant) {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text(restant <= 0
+                          ? '${p.nom} est épuisé.'
+                          : 'Stock insuffisant : il ne reste que $restant ${p.nom}.'),
+                    ));
+                    return;
+                  }
+                  context.read<PanierProvider>().ajouter(p);
+                },
+                onRetirer: () => context.read<PanierProvider>().retirer(p),
+              ),
+              if (info != null)
+                Padding(
+                  padding: const EdgeInsets.only(left: 18, top: 4),
+                  child: Text(info,
+                      style: Typo.petit.copyWith(
+                          color: infoCouleur, fontWeight: FontWeight.w600)),
+                ),
+            ],
           );
         },
       );

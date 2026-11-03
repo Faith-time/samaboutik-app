@@ -13,6 +13,7 @@ import '../../widgets/courbe_ventes.dart';
 import '../../widgets/fond_neo.dart';
 import '../../widgets/message_erreur.dart';
 import '../../models/vente.dart';
+import '../../widgets/stock_widgets.dart';
 
 /// Statistiques détaillées : recettes, panier moyen, répartition par moyen de paiement.
 class TableauDeBordScreen extends StatefulWidget {
@@ -149,6 +150,7 @@ class _Contenu extends StatelessWidget {
             ),
           ),
         ],
+        const SectionStockFinances(),
       ],
     );
   }

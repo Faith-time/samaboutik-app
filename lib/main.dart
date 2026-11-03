@@ -9,6 +9,7 @@ import 'providers/rapport_provider.dart';
 import 'providers/retrait_provider.dart';
 import 'providers/tableau_bord_provider.dart';
 import 'providers/vente_provider.dart';
+import 'providers/stock_provider.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,6 +24,7 @@ void main() {
         ChangeNotifierProvider(create: (_) => TableauBordProvider()),
         ChangeNotifierProvider(create: (_) => RapportProvider()),
         ChangeNotifierProvider(create: (_) => RetraitProvider()),
+        ChangeNotifierProvider(create: (_) => StockProvider()),
       ],
       child: const SamaBoutikApp(),
     ),

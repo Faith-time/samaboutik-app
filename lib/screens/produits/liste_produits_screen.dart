@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../core/formatters.dart';
 import '../../core/routes.dart';
+import '../../core/stock_outils.dart';
+import '../../core/theme.dart';
 import '../../providers/produit_provider.dart';
+import '../../providers/stock_provider.dart';
 import '../../widgets/bouton_principal.dart';
-import '../../widgets/carte_produit.dart';
+import '../../widgets/carte_neo.dart';
 import '../../widgets/chargement.dart';
 import '../../widgets/composants_neo.dart';
 import '../../widgets/fond_neo.dart';
 import '../../widgets/message_erreur.dart';
+import '../../widgets/stock_widgets.dart';
+import '../stock/classement_screen.dart';
+import '../stock/stock_screen.dart';
 import 'formulaire_produit_screen.dart';
 
 class ListeProduitsScreen extends StatefulWidget {
@@ -22,14 +29,24 @@ class _ListeProduitsScreenState extends State<ListeProduitsScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) context.read<ProduitProvider>().charger();
+      if (!mounted) return;
+      context.read<ProduitProvider>().charger();
+      context.read<StockProvider>().charger();
     });
+  }
+
+  Future<void> _rafraichir() async {
+    await Future.wait([
+      context.read<ProduitProvider>().charger(),
+      context.read<StockProvider>().charger(),
+    ]);
   }
 
   @override
   Widget build(BuildContext context) {
     final p = context.watch<ProduitProvider>();
-    final ouvrirFormulaire = () => aller(context, const FormulaireProduitScreen());
+    final stock = context.watch<StockProvider>();
+    void ouvrirFormulaire() => aller(context, const FormulaireProduitScreen());
 
     Widget contenu;
     if (p.chargement && p.produits.isEmpty) {
@@ -48,17 +65,80 @@ class _ListeProduitsScreenState extends State<ListeProduitsScreen> {
       );
     } else {
       contenu = RefreshIndicator(
-        onRefresh: () => context.read<ProduitProvider>().charger(),
+        onRefresh: _rafraichir,
         child: ListView.separated(
           padding: const EdgeInsets.fromLTRB(2, 4, 2, 12),
-          itemCount: p.produits.length,
+          itemCount: p.produits.length + 1,
           separatorBuilder: (_, __) => const SizedBox(height: 14),
           itemBuilder: (_, i) {
-            final produit = p.produits[i];
-            return CarteProduit(
-              produit: produit,
-              onTap: () =>
-                  aller(context, FormulaireProduitScreen(produit: produit)),
+            if (i == 0) {
+              return Row(
+                children: [
+                  Expanded(
+                    child: BoutonPrincipal(
+                      texte: 'Mon stock',
+                      secondaire: true,
+                      icone: Icons.inventory_rounded,
+                      onPressed: () => aller(context, const StockScreen()),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: BoutonPrincipal(
+                      texte: 'Classement',
+                      secondaire: true,
+                      icone: Icons.leaderboard_rounded,
+                      onPressed: () => aller(context, const ClassementScreen()),
+                    ),
+                  ),
+                ],
+              );
+            }
+            final produit = p.produits[i - 1];
+            final s = stock.produit(produit.id);
+            final suivi = s != null && s.suivreStock;
+            return CarteNeo(
+              rayon: 20,
+              padding: const EdgeInsets.all(14),
+              onTap: () => aller(context, FormulaireProduitScreen(produit: produit)),
+              child: Row(
+                children: [
+                  IconeRonde(
+                    icone: Icons.inventory_2_outlined,
+                    couleur: suivi ? couleurStatutStock(s!.statutStock) : Couleurs.bleu,
+                    fond: suivi ? fondStatutStock(s!.statutStock) : Couleurs.bleuClair,
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(produit.nom,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: Typo.corps.copyWith(fontWeight: FontWeight.w700)),
+                        Text(formatFcfa(produit.prixFcfa), style: Typo.petit),
+                        if (suivi)
+                          Text(
+                            'Stock : ${texteUnites(s!.stockActuel)}'
+                            '${s.unitesParLot > 1 && s.lotsRestants != null ? ' (${texteLots(s.lotsRestants!)})' : ''}',
+                            style: Typo.petit,
+                          ),
+                      ],
+                    ),
+                  ),
+                  if (!produit.actif)
+                    PastilleStatut(
+                        libelle: 'Inactif',
+                        couleur: Couleurs.texteDoux,
+                        fond: Couleurs.champ)
+                  else if (suivi)
+                    PastilleStock(s!.statutStock)
+                  else
+                    const Icon(Icons.chevron_right_rounded,
+                        color: Couleurs.texteDoux),
+                ],
+              ),
             );
           },
         ),
