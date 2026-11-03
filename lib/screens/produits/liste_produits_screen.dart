@@ -105,8 +105,8 @@ class _ListeProduitsScreenState extends State<ListeProduitsScreen> {
                 children: [
                   IconeRonde(
                     icone: Icons.inventory_2_outlined,
-                    couleur: suivi ? couleurStatutStock(s!.statutStock) : Couleurs.bleu,
-                    fond: suivi ? fondStatutStock(s!.statutStock) : Couleurs.bleuClair,
+                    couleur: suivi ? couleurStatutStock(s.statutStock) : Couleurs.bleu,
+                    fond: suivi ? fondStatutStock(s.statutStock) : Couleurs.bleuClair,
                   ),
                   const SizedBox(width: 12),
                   Expanded(
@@ -120,7 +120,7 @@ class _ListeProduitsScreenState extends State<ListeProduitsScreen> {
                         Text(formatFcfa(produit.prixFcfa), style: Typo.petit),
                         if (suivi)
                           Text(
-                            'Stock : ${texteUnites(s!.stockActuel)}'
+                            'Stock : ${texteUnites(s.stockActuel)}'
                             '${s.unitesParLot > 1 && s.lotsRestants != null ? ' (${texteLots(s.lotsRestants!)})' : ''}',
                             style: Typo.petit,
                           ),
@@ -133,7 +133,7 @@ class _ListeProduitsScreenState extends State<ListeProduitsScreen> {
                         couleur: Couleurs.texteDoux,
                         fond: Couleurs.champ)
                   else if (suivi)
-                    PastilleStock(s!.statutStock)
+                    PastilleStock(s.statutStock)
                   else
                     const Icon(Icons.chevron_right_rounded,
                         color: Couleurs.texteDoux),
