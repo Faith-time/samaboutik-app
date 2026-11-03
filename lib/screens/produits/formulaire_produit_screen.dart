@@ -10,7 +10,6 @@ import '../../services/api_client.dart';
 import '../../widgets/bouton_principal.dart';
 import '../../widgets/carte_neo.dart';
 import '../../widgets/champ_texte.dart';
-import '../../widgets/composants_neo.dart';
 import '../../widgets/fond_neo.dart';
 import '../stock/reapprovisionner_screen.dart';
 

@@ -1,7 +1,6 @@
 import '../core/formatters.dart';
 import '../models/tableau_bord.dart';
 import 'api_client.dart';
-import '../core/routes.dart';
 
 class TableauBordService {
   final _dio = ApiClient.instance.dio;

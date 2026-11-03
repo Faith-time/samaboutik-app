@@ -1,7 +1,6 @@
 import '../core/formatters.dart';
 import '../models/retrait.dart';
 import 'api_client.dart';
-import '../core/routes.dart';
 
 class RetraitService {
   final _dio = ApiClient.instance.dio;

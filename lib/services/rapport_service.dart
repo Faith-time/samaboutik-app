@@ -1,7 +1,6 @@
 import '../core/formatters.dart';
 import '../models/rapport_ia.dart';
 import 'api_client.dart';
-import '../core/routes.dart';
 
 class RapportService {
   final _dio = ApiClient.instance.dio;

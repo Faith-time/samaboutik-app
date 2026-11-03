@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import '../core/config.dart';
 import 'stockage_service.dart';
-import '../core/routes.dart';
 
 class ApiClient {
   ApiClient._() {

@@ -1,7 +1,6 @@
 import '../models/utilisateur.dart';
 import 'api_client.dart';
 import 'stockage_service.dart';
-import '../core/routes.dart';
 
 class AuthService {
   final _dio = ApiClient.instance.dio;

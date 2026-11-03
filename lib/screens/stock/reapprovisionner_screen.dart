@@ -8,7 +8,6 @@ import '../../providers/stock_provider.dart';
 import '../../widgets/bouton_principal.dart';
 import '../../widgets/carte_neo.dart';
 import '../../widgets/champ_texte.dart';
-import '../../widgets/composants_neo.dart';
 import '../../widgets/fond_neo.dart';
 
 /// Une ligne d'achat : un produit, des paquets, un prix.

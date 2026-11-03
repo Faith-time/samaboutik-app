@@ -1,7 +1,6 @@
 import '../core/formatters.dart';
 import '../models/vente.dart';
 import 'api_client.dart';
-import '../core/routes.dart';
 
 class VenteService {
   final _dio = ApiClient.instance.dio;

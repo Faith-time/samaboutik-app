@@ -13,7 +13,6 @@ import '../../widgets/composants_neo.dart';
 import '../../widgets/courbe_ventes.dart';
 import '../../widgets/fond_neo.dart';
 import '../../widgets/message_erreur.dart';
-import '../bitcoin/comprendre_bitcoin_screen.dart';
 import '../conseils/conseils_screen.dart';
 import '../produits/liste_produits_screen.dart';
 import '../profil/profil_screen.dart';
