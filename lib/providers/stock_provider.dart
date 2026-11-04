@@ -116,6 +116,6 @@ class StockProvider extends ChangeNotifier {
   }
 
   /// Crée ou modifie un produit (avec ses réglages de stock). Lance une erreur lisible en cas d'échec.
-  Future<void> enregistrerProduit({int? id, required Map<String, dynamic> champs}) =>
+  Future<int> enregistrerProduit({int? id, required Map<String, dynamic> champs}) =>
       _service.enregistrerProduit(id: id, donnees: champs);
 }

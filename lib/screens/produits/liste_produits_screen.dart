@@ -10,6 +10,7 @@ import '../../widgets/bouton_principal.dart';
 import '../../widgets/carte_neo.dart';
 import '../../widgets/chargement.dart';
 import '../../widgets/composants_neo.dart';
+import '../../widgets/image_produit.dart';
 import '../../widgets/fond_neo.dart';
 import '../../widgets/message_erreur.dart';
 import '../../widgets/stock_widgets.dart';
@@ -103,10 +104,14 @@ class _ListeProduitsScreenState extends State<ListeProduitsScreen> {
               onTap: () => aller(context, FormulaireProduitScreen(produit: produit)),
               child: Row(
                 children: [
-                  IconeRonde(
-                    icone: Icons.inventory_2_outlined,
-                    couleur: suivi ? couleurStatutStock(s.statutStock) : Couleurs.bleu,
-                    fond: suivi ? fondStatutStock(s.statutStock) : Couleurs.bleuClair,
+                  ImageProduit(
+                    url: produit.imageUrl,
+                    taille: 56,
+                    repli: IconeRonde(
+                      icone: Icons.inventory_2_outlined,
+                      couleur: suivi ? couleurStatutStock(s.statutStock) : Couleurs.bleu,
+                      fond: suivi ? fondStatutStock(s.statutStock) : Couleurs.bleuClair,
+                    ),
                   ),
                   const SizedBox(width: 12),
                   Expanded(

@@ -11,6 +11,7 @@ import '../../widgets/bouton_principal.dart';
 import '../../widgets/carte_neo.dart';
 import '../../widgets/champ_texte.dart';
 import '../../widgets/fond_neo.dart';
+import '../../widgets/selecteur_image_produit.dart';
 import '../stock/reapprovisionner_screen.dart';
 
 /// Ajout ou modification d'un produit (si [produit] est fourni), avec le suivi du stock.
@@ -36,6 +37,10 @@ class _FormulaireProduitScreenState extends State<FormulaireProduitScreen> {
   bool _suivre = false;
   bool _envoi = false;
   String? _erreur;
+
+  // Photo : nouvelle image choisie (chemin local) ou retrait de l'image existante
+  String? _imageLocale;
+  bool _imageRetiree = false;
 
   // Stock actuel (modification d'un produit déjà suivi)
   int? _stockActuel;
@@ -110,10 +115,31 @@ class _FormulaireProduitScreenState extends State<FormulaireProduitScreen> {
 
     final stock = context.read<StockProvider>();
     final produits = context.read<ProduitProvider>();
+    final messager = ScaffoldMessenger.of(context);
+    final navigateur = Navigator.of(context);
     try {
-      await stock.enregistrerProduit(id: widget.produit?.id, champs: champs);
+      final id = await stock.enregistrerProduit(id: widget.produit?.id, champs: champs);
+
+      // La photo est envoyée à part. Si elle échoue, le produit est quand même enregistré
+      // (on ne bloque pas le commerçant, et on évite de créer un doublon en réessayant).
+      String? avertissement;
+      try {
+        if (_imageLocale != null) {
+          await produits.televerserImage(id, _imageLocale!);
+        } else if (_imageRetiree && widget.produit?.imageUrl != null) {
+          await produits.supprimerImage(id);
+        }
+      } catch (e) {
+        avertissement = "Produit enregistré, mais la photo n'a pas pu être envoyée : "
+            '${ApiClient.messageErreur(e)} Réessayez en modifiant le produit.';
+      }
+
       await Future.wait([produits.charger(), stock.charger()]);
-      if (mounted) Navigator.of(context).pop();
+      if (!mounted) return;
+      navigateur.pop();
+      if (avertissement != null) {
+        messager.showSnackBar(SnackBar(content: Text(avertissement)));
+      }
     } catch (e) {
       if (mounted) {
         setState(() {
@@ -192,6 +218,19 @@ class _FormulaireProduitScreenState extends State<FormulaireProduitScreen> {
         child: Column(
           children: [
             const SizedBox(height: 8),
+            SelecteurImageProduit(
+              urlActuelle: _imageRetiree ? null : widget.produit?.imageUrl,
+              cheminLocal: _imageLocale,
+              onChoisie: (chemin) => setState(() {
+                _imageLocale = chemin;
+                _imageRetiree = false;
+              }),
+              onRetirer: () => setState(() {
+                _imageLocale = null;
+                _imageRetiree = true;
+              }),
+            ),
+            const SizedBox(height: 14),
             ChampTexte(
               controller: _nom,
               label: 'Nom du produit',

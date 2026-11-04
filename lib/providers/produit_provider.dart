@@ -25,6 +25,19 @@ class ProduitProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Envoie la photo d'un produit puis met la liste à jour. Lance une erreur en cas d'échec.
+  Future<void> televerserImage(int id, String chemin) async {
+    final p = await _service.televerserImage(id, chemin);
+    produits = produits.map((x) => x.id == p.id ? p : x).toList();
+    notifyListeners();
+  }
+
+  Future<void> supprimerImage(int id) async {
+    final p = await _service.supprimerImage(id);
+    produits = produits.map((x) => x.id == p.id ? p : x).toList();
+    notifyListeners();
+  }
+
   /// Crée un produit (existant == null) ou modifie un produit existant.
   Future<bool> enregistrer({
     Produit? existant,

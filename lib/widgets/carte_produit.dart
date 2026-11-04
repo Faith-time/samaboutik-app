@@ -5,6 +5,7 @@ import '../models/produit.dart';
 import 'carte_neo.dart';
 import 'composants_neo.dart';
 import 'fond_neo.dart';
+import 'image_produit.dart';
 
 /// Ligne produit. Avec [quantite], affiche un sélecteur (+ / -) pour le panier.
 class CarteProduit extends StatelessWidget {
@@ -32,10 +33,14 @@ class CarteProduit extends StatelessWidget {
       onTap: onTap ?? (quantite != null ? onAjouter : null),
       child: Row(
         children: [
-          IconeRonde(
-            icone: Icons.inventory_2_outlined,
-            fond: produit.actif ? Couleurs.bleuClair : Couleurs.champ,
-            couleur: produit.actif ? Couleurs.bleu : Couleurs.texteDoux,
+          ImageProduit(
+            url: produit.imageUrl,
+            taille: 56,
+            repli: IconeRonde(
+              icone: Icons.inventory_2_outlined,
+              fond: produit.actif ? Couleurs.bleuClair : Couleurs.champ,
+              couleur: produit.actif ? Couleurs.bleu : Couleurs.texteDoux,
+            ),
           ),
           const SizedBox(width: 14),
           Expanded(

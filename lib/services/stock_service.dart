@@ -49,12 +49,11 @@ class StockService {
     });
   }
 
-  /// Crée (id == null) ou modifie un produit, avec ses réglages de stock.
-  Future<void> enregistrerProduit({int? id, required Map<String, dynamic> donnees}) async {
-    if (id == null) {
-      await _dio.post('/produits', data: donnees);
-    } else {
-      await _dio.put('/produits/$id', data: donnees);
-    }
+  /// Retourne l'identifiant du produit (utile pour envoyer sa photo juste après).
+  Future<int> enregistrerProduit({int? id, required Map<String, dynamic> donnees}) async {
+    final r = id == null
+        ? await _dio.post('/produits', data: donnees)
+        : await _dio.put('/produits/$id', data: donnees);
+    return versInt(_objet(r.data)['id']);
   }
 }
