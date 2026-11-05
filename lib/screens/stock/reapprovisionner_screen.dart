@@ -9,6 +9,7 @@ import '../../widgets/bouton_principal.dart';
 import '../../widgets/carte_neo.dart';
 import '../../widgets/champ_texte.dart';
 import '../../widgets/fond_neo.dart';
+import '../../widgets/image_produit.dart';
 
 const _vert = Color(0xFF22A06B);
 const _fondEtape = Color(0xFFF4F7FE);
@@ -268,20 +269,24 @@ class _ReapprovisionnerScreenState extends State<ReapprovisionnerScreen> {
           // ---- En-tête de la carte
           Row(
             children: [
-              Container(
-                width: 44,
-                height: 44,
-                decoration: const BoxDecoration(
-                  color: Color(0xFFE3ECFF),
-                  shape: BoxShape.circle,
-                ),
-                child: Center(
-                  child: Text(
-                    '${index + 1}',
-                    style: const TextStyle(
-                      color: Couleurs.bleu,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w800,
+              VignetteProduit(
+                produitId: l.produitId,
+                taille: 44,
+                repli: Container(
+                  width: 44,
+                  height: 44,
+                  decoration: const BoxDecoration(
+                    color: Color(0xFFE3ECFF),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Center(
+                    child: Text(
+                      '${index + 1}',
+                      style: const TextStyle(
+                        color: Couleurs.bleu,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w800,
+                      ),
                     ),
                   ),
                 ),
@@ -333,7 +338,21 @@ class _ReapprovisionnerScreenState extends State<ReapprovisionnerScreen> {
                 for (final p in produits)
                   DropdownMenuItem<int>(
                     value: p.produitId as int,
-                    child: Text(p.nom as String, overflow: TextOverflow.ellipsis),
+                    child: Row(
+                      children: [
+                        VignetteProduit(
+                          produitId: p.produitId as int,
+                          taille: 30,
+                          repli: const Icon(Icons.inventory_2_outlined,
+                              size: 20, color: Couleurs.texteDoux),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(p.nom as String,
+                              overflow: TextOverflow.ellipsis),
+                        ),
+                      ],
+                    ),
                   ),
               ],
               onChanged: (v) => _choisir(l, v),

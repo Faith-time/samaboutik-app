@@ -13,6 +13,7 @@ import 'bouton_principal.dart';
 import 'carte_neo.dart';
 import 'chargement.dart';
 import 'composants_neo.dart';
+import 'image_produit.dart';
 
 /// Pastille « En stock / Stock bas / Épuisé » (rien si le stock n'est pas suivi).
 class PastilleStock extends StatelessWidget {
@@ -61,10 +62,16 @@ class TuileStock extends StatelessWidget {
           () => aller(context, ReapprovisionnerScreen(produitId: p.produitId)),
       child: Row(
         children: [
-          IconeRonde(
-            icone: Icons.inventory_2_outlined,
-            couleur: couleur,
-            fond: fondStatutStock(p.statutStock),
+          VignetteProduit(
+            produitId: p.produitId,
+            nom: p.nom,
+            taille: 52,
+            repli: IconeRonde(
+              icone: Icons.inventory_2_outlined,
+              couleur: couleur,
+              fond: fondStatutStock(p.statutStock),
+              taille: 52,
+            ),
           ),
           const SizedBox(width: 12),
           Expanded(

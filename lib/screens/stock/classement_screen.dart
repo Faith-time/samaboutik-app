@@ -15,6 +15,7 @@ import '../../widgets/onglets_pilule.dart';
 import '../../widgets/stock_widgets.dart';
 import '../produits/formulaire_produit_screen.dart';
 import 'reapprovisionner_screen.dart';
+import '../../widgets/image_produit.dart';
 
 /// Classement de TOUS les produits : du plus vendu au moins vendu.
 class ClassementScreen extends StatefulWidget {
@@ -448,7 +449,9 @@ class _CartePodium extends StatelessWidget {
           Row(
             children: [
               _Rang(l.rang, taille: 50),
-              const SizedBox(width: 14),
+              const SizedBox(width: 12),
+              _VignetteLigne(l, taille: 50),
+              const SizedBox(width: 12),
               Expanded(
                 child: Text(l.nom,
                     maxLines: 2,
@@ -513,7 +516,9 @@ class _CarteRang extends StatelessWidget {
           Row(
             children: [
               _Rang(l.rang),
-              const SizedBox(width: 12),
+              const SizedBox(width: 10),
+              _VignetteLigne(l, taille: 44),
+              const SizedBox(width: 10),
               Expanded(
                 child: Text(l.nom,
                     maxLines: 2,
@@ -557,8 +562,13 @@ class _LigneSansVente extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 14),
         child: Row(
           children: [
-            const Icon(Icons.hourglass_empty_rounded,
-                size: 22, color: Couleurs.texteDoux),
+            VignetteProduit(
+              produitId: l.produitId,
+              nom: l.nom,
+              taille: 40,
+              repli: const Icon(Icons.hourglass_empty_rounded,
+                  size: 22, color: Couleurs.texteDoux),
+            ),
             const SizedBox(width: 12),
             Expanded(
               child: Text(l.nom,
@@ -570,4 +580,21 @@ class _LigneSansVente extends StatelessWidget {
       ),
     );
   }
+}
+/// Photo du produit d'une ligne du classement (icône si pas de photo).
+class _VignetteLigne extends StatelessWidget {
+  final LigneClassement ligne;
+  final double taille;
+  const _VignetteLigne(this.ligne, {required this.taille});
+
+  @override
+  Widget build(BuildContext context) => VignetteProduit(
+        produitId: ligne.produitId,
+        nom: ligne.nom,
+        taille: taille,
+        repli: IconeRonde(
+          icone: Icons.inventory_2_outlined,
+          taille: taille,
+        ),
+      );
 }

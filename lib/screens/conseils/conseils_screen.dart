@@ -21,6 +21,7 @@ import '../../widgets/message_erreur.dart';
 import '../dashboard/tableau_de_bord_screen.dart';
 import '../stock/classement_screen.dart';
 import '../stock/reapprovisionner_screen.dart';
+import '../../widgets/image_produit.dart';
 
 /// Onglet « Analyse IA » : chiffres, courbes, produits stars, alertes et conseils.
 class ConseilsScreen extends StatefulWidget {
@@ -339,14 +340,47 @@ class _CarteStar extends StatelessWidget {
       padding: const EdgeInsets.all(18),
       child: Row(
         children: [
-          Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(color: m, shape: BoxShape.circle),
-            child: Center(
-              child: Text('$rang',
-                  style: const TextStyle(
-                      color: Colors.white, fontSize: 21, fontWeight: FontWeight.w800)),
+          SizedBox(
+            width: 58,
+            height: 58,
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                VignetteProduit(
+                  produitId: l.produitId,
+                  nom: l.nom,
+                  taille: 54,
+                  repli: Container(
+                    width: 54,
+                    height: 54,
+                    decoration: BoxDecoration(
+                        color: Couleurs.bleuClair,
+                        borderRadius: BorderRadius.circular(14)),
+                    child: const Icon(Icons.inventory_2_outlined,
+                        color: Couleurs.bleu, size: 26),
+                  ),
+                ),
+                Positioned(
+                  right: -2,
+                  bottom: -2,
+                  child: Container(
+                    width: 24,
+                    height: 24,
+                    decoration: BoxDecoration(
+                      color: m,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.white, width: 2),
+                    ),
+                    child: Center(
+                      child: Text('$rang',
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w800)),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
           const SizedBox(width: 14),
@@ -419,11 +453,16 @@ class _CarteAlerte extends StatelessWidget {
         children: [
           Row(
             children: [
-              IconeRonde(
-                icone: Icons.warning_amber_rounded,
-                couleur: couleur,
-                fond: fondStatutStock(p.statutStock),
-                taille: 48,
+              VignetteProduit(
+                produitId: p.produitId,
+                nom: p.nom,
+                taille: 52,
+                repli: IconeRonde(
+                  icone: Icons.warning_amber_rounded,
+                  couleur: couleur,
+                  fond: fondStatutStock(p.statutStock),
+                  taille: 52,
+                ),
               ),
               const SizedBox(width: 14),
               Expanded(

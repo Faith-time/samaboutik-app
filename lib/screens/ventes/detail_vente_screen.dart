@@ -16,6 +16,7 @@ import '../../widgets/composants_neo.dart';
 import '../../widgets/fond_neo.dart';
 import '../../widgets/message_erreur.dart';
 import '../paiement/choix_paiement_screen.dart';
+import '../../widgets/image_produit.dart';
 
 class DetailVenteScreen extends StatefulWidget {
   final int venteId;
@@ -110,6 +111,14 @@ class _DetailVenteScreenState extends State<DetailVenteScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 5),
                     child: Row(
                       children: [
+                        VignetteProduit(
+                          produitId: l.produitId,
+                          nom: l.nomProduit,
+                          taille: 40,
+                          repli: const IconeRonde(
+                              icone: Icons.inventory_2_outlined, taille: 40),
+                        ),
+                        const SizedBox(width: 12),
                         Expanded(
                           child: Text('${l.quantite} × ${l.nomProduit}',
                               style: Typo.corps),

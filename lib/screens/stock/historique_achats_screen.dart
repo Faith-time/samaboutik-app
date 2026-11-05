@@ -11,6 +11,7 @@ import '../../widgets/composants_neo.dart';
 import '../../widgets/fond_neo.dart';
 import '../../widgets/message_erreur.dart';
 import 'reapprovisionner_screen.dart';
+import '../../widgets/image_produit.dart';
 
 /// Historique des achats faits chez les fournisseurs.
 class HistoriqueAchatsScreen extends StatefulWidget {
@@ -258,17 +259,20 @@ class _LigneAchatProduit extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            width: 48,
-            height: 48,
-
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: c.withValues(alpha: .14),
-              borderRadius: BorderRadius.circular(15),
+          VignetteProduit(
+            nom: l.nomProduit,
+            taille: 48,
+            repli: Container(
+              width: 48,
+              height: 48,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: c.withValues(alpha: .14),
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: Text(initiale,
+                  style: TextStyle(color: c, fontSize: 21, fontWeight: FontWeight.w800)),
             ),
-            child: Text(initiale,
-                style: TextStyle(color: c, fontSize: 21, fontWeight: FontWeight.w800)),
           ),
           const SizedBox(width: 14),
           Expanded(

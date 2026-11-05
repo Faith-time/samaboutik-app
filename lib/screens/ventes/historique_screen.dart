@@ -15,6 +15,7 @@ import '../../widgets/fond_neo.dart';
 import '../../widgets/message_erreur.dart';
 import '../../widgets/onglets_pilule.dart';
 import 'detail_vente_screen.dart';
+import '../../widgets/image_produit.dart';
 
 /// Onglet « Mes ventes » : période, courbe, détail par moyen de paiement, dernières ventes.
 class HistoriqueScreen extends StatefulWidget {
@@ -200,11 +201,20 @@ class _TuileVente extends StatelessWidget {
       onTap: () => aller(context, DetailVenteScreen(venteId: vente.id)),
       child: Row(
         children: [
-          IconeRonde(
-            icone: m.isEmpty ? Icons.receipt_long_outlined : iconeMethode(m),
-            couleur: m.isEmpty ? Couleurs.texteDoux : couleurMethode(m),
-            fond: m.isEmpty ? Couleurs.champ : fondMethode(m),
-          ),
+          () {
+            final repli = IconeRonde(
+              icone: m.isEmpty ? Icons.receipt_long_outlined : iconeMethode(m),
+              couleur: m.isEmpty ? Couleurs.texteDoux : couleurMethode(m),
+              fond: m.isEmpty ? Couleurs.champ : fondMethode(m),
+            );
+            if (vente.lignes.isEmpty) return repli;
+            return VignetteProduit(
+              produitId: vente.lignes.first.produitId,
+              nom: vente.lignes.first.nomProduit,
+              taille: 44,
+              repli: repli,
+            );
+          }(),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
